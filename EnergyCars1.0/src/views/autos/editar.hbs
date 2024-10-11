@@ -3,7 +3,7 @@
         <div class="col-md-4 mx-auto">
             <div class="card">
                 <div class="card-body">
-                    <form action="/autos/editar/:{{editarAutos.ID_VEH}}" method="POST">
+                    <form action="/autos/editar/{{editarAutos.ID_VEH}}" method="POST">
                         <div class="form-group my-3">
                             <label for="veh_marca" class="form-label">Marca:</label>
                             <input type="text" value="{{editarAutos.VEH_MARCA}}" id="veh_marca" class="form-control" name="veh_marca" placeholder="Ej: Chery" autofocus>
@@ -20,8 +20,9 @@
                             <label for="veh_patente" class="form-label">Patente:</label>
                             <input type="text" value="{{editarAutos.VEH_PATENTE}}" id="veh_patente" class="form-control" name="veh_patente" placeholder="Ej: ABC-123">
                         </div>
-                        <div class="form-group d-grid my-3">
-                            <button class="btn btn-success">REGISTAR</button>
+                        <div class="form-group row gx-3 my-3">
+                            <button class="btn btn-success">GUARDAR</button>
+                            <a href="/autos" class="btn btn-danger my-2">CANCELAR</a>
                         </div>                        
                     </form>
                 </div>

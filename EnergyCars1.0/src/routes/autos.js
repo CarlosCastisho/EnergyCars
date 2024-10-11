@@ -16,7 +16,7 @@ router.post('/agregar', async (req, res) => {
         veh_patente
     };
     await pool.query('INSERT INTO vehiculos set ?', [newAutos]);
-    console.log(newAutos);
+    req.flash('auto_success', 'AUTO AGREGADO CORRECTAMENTE');
     res.redirect('/autos');
 });
 
@@ -28,6 +28,7 @@ router.get('/', async (req, res) => {
 router.get('/eliminar/:ID_VEH', async (req,res) => {
     const {ID_VEH} = req.params;
     await pool.query('DELETE FROM vehiculos WHERE ID_VEH = ?', [ID_VEH]);
+    req.flash('auto_success', 'AUTO ELIMINADO')
     res.redirect('/autos');
 });
 
@@ -38,7 +39,7 @@ router.get('/editar/:ID_VEH', async (req,res) => {
 });
 
 
-router.post('/editar/ID_VEH', async (req,res) => {
+router.post('/editar/:ID_VEH', async (req,res) => {
     const { ID_VEH } = req.params;
     const { veh_marca, veh_modelo, veh_anio, veh_patente } = req.body;
     const editarAutos = {
@@ -47,8 +48,8 @@ router.post('/editar/ID_VEH', async (req,res) => {
         veh_anio,
         veh_patente
     };
-    console.log(editarAutos);
     await pool.query('UPDATE vehiculos set ? WHERE ID_VEH = ?', [editarAutos, ID_VEH]);
+    req.flash('auto_success', 'AUTO EDITATO CORRECTAMENTE');
     res.redirect('/autos');
 })
 
