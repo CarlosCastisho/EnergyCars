@@ -1,3 +1,11 @@
 body {
     background-image: linear-gradient(#fafcff, #aaccf7, #98f6a0);
 }
+
+.barUser {
+    background-color: #8ccddf !important;
+}
+
+.barUser a {
+    color: #09298b;
+}
