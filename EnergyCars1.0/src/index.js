@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const session = require('express-session')
 const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport');
+const hbs = require('handlebars');
 
 const { database } = require('./keys');
 
@@ -25,6 +26,14 @@ app.engine('.hbs', engine({
     helpers: require('./lib/handlebars')
 }));
 app.set('view engine', '.hbs');
+
+hbs.registerHelper('eq', function(a,b){
+    return a === b;
+});
+
+hbs.registerHelper('mayor', function(a,b){
+    return a > b;
+});
 
 //Middlewares
 app.use(session({

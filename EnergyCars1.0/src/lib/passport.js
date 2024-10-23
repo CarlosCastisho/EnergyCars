@@ -3,7 +3,6 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const pool = require('../database') //Traemos la base de datos para usarla
 const helpers = require('../lib/helpers');
-const { database } = require('../keys');
 
 passport.use('local.acceso', new LocalStrategy({
     usernameField: 'user_correo',
@@ -32,7 +31,7 @@ passport.use('local.registro', new LocalStrategy({
 }, async (req, user_correo, user_contrasenia, done) => {
 
     const {user_nombre, user_apellido, user_telefono} = req.body;
-    const nuevoUsuario = {
+    let nuevoUsuario = {
         user_nombre,
         user_apellido,
         user_correo,
@@ -46,10 +45,12 @@ passport.use('local.registro', new LocalStrategy({
 }));
 
 passport.serializeUser((user, done) => {
-    done(null, user.ID_USER);
+    done(null, user.ID_USER); // Asegúrate de que ID_USER sea correcto
+    console.log('Serializing user:', user.ID_USER); // Para depuración
 });
 
-passport.deserializeUser(async(id_user, done) => {
-    const rows = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [id_user]);
+passport.deserializeUser(async(ID_USER, done) => {
+    const rows = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
+    console.log(rows, ID_USER);
     done(null, rows[0]);
 })
