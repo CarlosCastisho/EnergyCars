@@ -5,7 +5,7 @@ const helpers = {};
 
 //METODO CUANDO SE REGISTRA EL USUARIO
 helpers.encryptContrasenia = async(contrasenia) => {
-    const salt = await bcrypy.genSalt(5);
+    const salt = await bcrypy.genSalt(10);
     const finalContrasenia = await bcrypy.hash(contrasenia, salt);
     return finalContrasenia;
 };
@@ -18,7 +18,5 @@ helpers.compararContrasenia = async(contrasenia, savedContrasenia) => {
         console.log(e);
     }
 };
-
-
 
 module.exports = helpers;
