@@ -21,7 +21,7 @@ router.get('/registro', isnoLoggedIn, (req, res) => {
 // });
 
 router.post('/registro', isnoLoggedIn, passport.authenticate('local.registro', {
-    successRedirect: '/perfil',
+    successRedirect: '/autos',
     failureRedirect: '/registro',
     failureFlash: true
 }))
@@ -32,22 +32,34 @@ router.get('/acceso', isnoLoggedIn, (req,res) => {
 
 router.post('/acceso', isnoLoggedIn, (req, res, next) => {
     passport.authenticate('local.acceso', {
-        successRedirect: '/perfil',
+        successRedirect: '/autos',
         failureRedirect: '/acceso',
         failureFlash: true
     })(req,res,next);
 });
 
 router.get('/perfil', isLoggedIn, (req,res) => {
-    res.render('perfil');
+    res.render('auth/perfil');
 });
 
-router.get('/editarUser/:ID_USER', isLoggedIn, async (req, res) => {
+router.get('/editarUser/:ID_USER', isLoggedIn, async (req,res) => {
     const {ID_USER} = req.params;
     const editarUser = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
-    console.log(ID_USER);
-    console.log(editarUser);
     res.render('auth/editarUser', {editarUser: editarUser[0]});
+});
+
+
+router.post('/editarUser/:ID_USER', isLoggedIn, async (req,res) => {
+    const { ID_USER } = req.params;
+    const { user_correo, user_telefono, user_contrasenia } = req.body;
+    const editarUser = {
+        user_correo,
+        user_telefono,
+        user_contrasenia
+    };
+    await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarUser, ID_USER]);
+    req.flash('auto_success', 'CAMBIO EXITOSO');
+    res.redirect('/perfil');
 })
 
 router.get('/cerrar', (req, res, next) => {

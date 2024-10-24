@@ -2,8 +2,18 @@
     <div class="col-md-4 mx-auto">
         <div class="">
             <div class="card-body">
-                <h3 class="card-title text-center">Crea una cuenta</h3>
+                <h3 class="card-title text-center">Editar cuenta</h3>
                 <form action="/auth/editarUser/{{editarUser.ID_USER}}" method="post">
+                    <div class="form-group my-3">
+                        <label for="correo" class="form-label">Nombre:</label>
+                        <input type="email" value="{{editarUser.USER_NOMBRE}}" id="user_nombre" name="user_nombre"
+                            class="form-control" disabled>
+                    </div>
+                    <div class="form-group my-3">
+                        <label for="correo" class="form-label">Apellido:</label>
+                        <input type="email" value="{{editarUser.USER_APELLIDO}}" id="user_apellido" name="user_apellido"
+                            class="form-control" disabled>
+                    </div>
                     <div class="form-group my-3">
                         <label for="correo" class="form-label">Correo:</label>
                         <input type="email" value="{{editarUser.USER_CORREO}}" id="user_correo" name="user_correo" placeholder="Ingrese su correo"
@@ -19,7 +29,7 @@
                             class="form-control">
                     </div>
                     <div class="form-group text-center">
-                        <button class="btn btn-success btn-block">REGISTRARSE</button>
+                        <button class="btn btn-success btn-block">EDITAR</button>
                     </div>
                 </form>
             </div>

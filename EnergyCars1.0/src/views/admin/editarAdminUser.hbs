@@ -1,0 +1,23 @@
+<div class="row p-4">
+    <div class="col-md-4 mx-auto">
+        <div class="">
+            <div class="card-body">
+                <h3 class="card-title text-center">Editar cuenta</h3>
+                <form action="/auth/editarUser/{{editarAdminUser.ID_USER}}" method="post">
+                    <div class="form-group my-3">
+                        <label for="correo" class="form-label">Correo:</label>
+                        <input type="email" value="{{editarAdminUser.USER_CORREO}}" id="user_correo" name="user_correo" placeholder="Ingrese su correo"
+                            class="form-control">
+                    </div>
+                    <div class="form-group my-3">
+                        <label for="telefono" class="form-label">Telefono:</label>
+                        <input type="tel" value="{{editarAdminUser.USER_TELEFONO}}" id="user_telefono" name="user_telefono" placeholder="11xxxxxxxx" class="form-control">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-success btn-block">REGISTRARSE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

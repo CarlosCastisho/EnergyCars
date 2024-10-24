@@ -46,11 +46,11 @@ passport.use('local.registro', new LocalStrategy({
 
 passport.serializeUser((user, done) => {
     done(null, user.ID_USER); // Asegúrate de que ID_USER sea correcto
-    console.log('Serializing user:', user.ID_USER); // Para depuración
+    //console.log('Serializing user:', user.ID_USER);  Para depuración
 });
 
 passport.deserializeUser(async(ID_USER, done) => {
     const rows = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
-    console.log(rows, ID_USER);
+    // console.log(rows, ID_USER);
     done(null, rows[0]);
 })
