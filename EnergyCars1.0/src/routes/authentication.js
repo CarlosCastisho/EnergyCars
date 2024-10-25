@@ -4,6 +4,7 @@ const router = express.Router();
 const passport = require('passport');
 const {isLoggedIn, isnoLoggedIn } = require('../lib/auth');
 const pool = require('../database');
+const helpers = require('../lib/helpers');
 
 // REDERIZAR EL FORMULRIO
 router.get('/registro', isnoLoggedIn, (req, res) => {
@@ -31,10 +32,24 @@ router.get('/acceso', isnoLoggedIn, (req,res) => {
 })
 
 router.post('/acceso', isnoLoggedIn, (req, res, next) => {
-    passport.authenticate('local.acceso', {
-        successRedirect: '/autos',
-        failureRedirect: '/acceso',
-        failureFlash: true
+    passport.authenticate('local.acceso', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user){
+            return res.redirect('/acceso')
+        }
+        req.logIn(user, (err) => {
+            if(err){
+                return next(err);
+            }
+
+            if (user.ID_USER === 1){
+                return res.redirect('/admin')
+            } else {
+                return res.redirect('/autos')
+            }
+        })
     })(req,res,next);
 });
 
@@ -55,10 +70,10 @@ router.post('/editarUser/:ID_USER', isLoggedIn, async (req,res) => {
     const editarUser = {
         user_correo,
         user_telefono,
-        user_contrasenia
+        user_contrasenia: await helpers.encryptContrasenia(user_contrasenia)
     };
     await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarUser, ID_USER]);
-    req.flash('auto_success', 'CAMBIO EXITOSO');
+    req.flash('auto_success', 'Usuario actualizado con éxito');
     res.redirect('/perfil');
 })
 
