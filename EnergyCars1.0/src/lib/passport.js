@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const pool = require('../database') //Traemos la base de datos para usarla
+const pool = require('../database'); // Traemos la base de datos para usarla
 const helpers = require('../lib/helpers');
 
 passport.use('local.acceso', new LocalStrategy({
@@ -14,7 +14,7 @@ passport.use('local.acceso', new LocalStrategy({
     if (rows.length > 0) {
         const user = rows[0];
         const validarContrasenia = await helpers.compararContrasenia(user_contrasenia, user.USER_CONTRASENIA);
-        if (validarContrasenia){
+        if (validarContrasenia) {
             done(null, user, req.flash('auto_success','Bienvenido ' + user.user_nombre + ' ' + user.user_apellido));
         } else {
             done(null, false, req.flash('auto_error','Contraseña Incorrecta'));
@@ -40,17 +40,15 @@ passport.use('local.registro', new LocalStrategy({
     };
     nuevoUsuario.user_contrasenia = await helpers.encryptContrasenia(user_contrasenia);
     const resultado = await pool.query('INSERT INTO usuario SET ?', [nuevoUsuario]);
-    nuevoUsuario.id_user = resultado.insertId;
+    nuevoUsuario.ID_USER = resultado.insertId;  // Cambiado a ID_USER
     return done(null, nuevoUsuario);
 }));
 
 passport.serializeUser((user, done) => {
-    done(null, user.ID_USER); // Asegúrate de que ID_USER sea correcto
-    //console.log('Serializing user:', user.ID_USER);  Para depuración
+    done(null, user.ID_USER); // Ahora estamos usando ID_USER consistentemente
 });
 
-passport.deserializeUser(async(ID_USER, done) => {
+passport.deserializeUser(async (ID_USER, done) => {
     const rows = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
-    // console.log(rows, ID_USER);
     done(null, rows[0]);
-})
+});

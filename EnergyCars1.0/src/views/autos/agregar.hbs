@@ -4,13 +4,24 @@
             <div class="card">
                 <div class="card-body">
                     <form action="/autos/agregar" method="POST">
-                        <div class="form-group my-3">
-                            <label for="veh_marca" class="form-label">Marca:</label>
-                            <input type="text" id="veh_marca" class="form-control" name="veh_marca" placeholder="Ej: Chery" autofocus>
-                        </div>
+
+                            
+                            <select id="veh_marca" class="form-control" name="veh_marca" onchange="actualizarModelos()">
+                                <option value="" disabled selected>Selecciona una marca</option>
+                                <option value="Ford">Ford</option>
+                                <option value="MercedesBenz">Mercedes Benz</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Porsche">Porsche</option>
+                                <option value="Nissan">Nissan</option>
+                                <option value="Coradir">Coradir</option>
+                                <option value="Renault">Renault</option>
+                            </select>
+                            
                         <div class="form-group my-3">
                             <label for="veh_modelo" class="form-label">Modelo:</label>
-                            <input type="text" id="veh_modelo" class="form-control" name="veh_modelo" placeholder="Ej: Camaro">
+                            <select id="veh_modelo" class="form-control" name="veh_modelo">
+                                <option value="" disabled selected>Selecciona un modelo</option>
+                            </select>
                         </div>
                         <div class="form-group my-3">
                             <label for="veh_anio" class="form-label">Año:</label>
@@ -29,3 +40,4 @@
         </div>
     </div>
 </div>
+
