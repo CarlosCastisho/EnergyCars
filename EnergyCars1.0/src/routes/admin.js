@@ -151,6 +151,10 @@ router.post('/gestionautos/conector', isLoggedIn, async (req, res) => {
     res.redirect('/admin/gestionautos');
 });
 
+router.post('/vermarcas1', isLoggedIn, async(req, res) => {
+    res.redirect('/admin/vermarcas')
+} )
+
 // Ruta para obtener datos de marcas , modelos y tipos de conectores
 router.get('/vermarcas', isLoggedIn, async (req, res) => {
     const marcas = await pool.query('SELECT * FROM marcas');
@@ -163,17 +167,17 @@ router.get('/vermarcas', isLoggedIn, async (req, res) => {
 });
 
 // Ruta para agregar relación entre marca, modelo y tipo de conector
-router.post('/vermarcas', isLoggedIn, async (req, res) => {
-    const { ID_MARCA, ID_MODELO, ID_TC } = req.body;
-    try {
-        if (ID_MARCA && ID_MODELO && ID_TC) {
-            await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [ID_MARCA, ID_MODELO, ID_TC]);
-            req.flash('success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
-        }
-        res.redirect('/vermarcas');
-    } catch (error) {
-        console.error('Error al agregar relación marca-modelo-tipo de conector:', error);
-        res.status(500).send('Error al agregar la relación marca-modelo-tipo de conector');
-    }
-});
+// router.post('/vermarcas', isLoggedIn, async (req, res) => {
+//     const { ID_MARCA, ID_MODELO, ID_TC } = req.body;
+//     try {
+//         if (ID_MARCA && ID_MODELO && ID_TC) {
+//             await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [ID_MARCA, ID_MODELO, ID_TC]);
+//             req.flash('success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
+//         }
+//         res.redirect('/admin/vermarcas');
+//     } catch (error) {
+//         console.error('Error al agregar relación marca-modelo-tipo de conector:', error);
+//         res.status(500).send('Error al agregar la relación marca-modelo-tipo de conector');
+//     }
+// });
 module.exports = router;
