@@ -16,26 +16,23 @@ router.get('/eliminar/:ID_USER', isLoggedIn, async (req,res) => {
     res.redirect('/admin');
 });
 
-router.get('/editar/:ID_VEH', isLoggedIn, async (req,res) => {
-    const {ID_VEH} = req.params;
-    const editarAutos = await pool.query('SELECT * FROM vehiculos WHERE ID_VEH = ?', [ID_VEH]);
-    res.render('autos/editar', {editarAutos: editarAutos[0]});
+router.get('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
+    const {ID_USER} = req.params;
+    const editarAdminUser = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
+    res.render('admin/editarAdminUser', {editarAdminUser: editarAdminUser[0]});
 });
 
 
-router.post('/editar/:ID_VEH', isLoggedIn, async (req,res) => {
-    const { ID_VEH } = req.params;
-    const { veh_marca, veh_modelo, veh_anio, veh_patente } = req.body;
-    const editarAutos = {
-        veh_marca,
-        veh_modelo,
-        veh_anio,
-        veh_patente
+router.post('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
+    const { ID_USER } = req.params;
+    const { user_correo, user_telefono } = req.body;
+    const editarAdminUser = {
+        user_correo,
+        user_telefono
     };
-    await pool.query('UPDATE vehiculos set ? WHERE ID_VEH = ?', [editarAutos, ID_VEH]);
-    req.flash('auto_success', 'CAMBIO EXITOSO');
-    res.redirect('/autos');
+    await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarAdminUser, ID_USER]);
+    req.flash('auto_success', 'Usuario actualizado con éxito');
+    res.redirect('/admin');
 })
-
 
 module.exports = router;
