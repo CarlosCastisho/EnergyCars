@@ -4,8 +4,9 @@ const router = express.Router();
 const pool =  require('../database');
 const {isLoggedIn} = require('../lib/auth')
 
-router.get('/agregar', isLoggedIn, (req, res) => {
-    res.render('autos/agregar');
+router.get('/agregar', isLoggedIn, async (req, res) => {
+    const marca_modelo = await pool.query('SELECT * FROM marca_modelo');
+    res.render('autos/agregar', {marca_modelo});
 });
 
 router.post('/agregar', isLoggedIn, async (req, res) => {

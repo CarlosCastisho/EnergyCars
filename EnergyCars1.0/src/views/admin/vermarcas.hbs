@@ -1,38 +1,41 @@
-                <h3>Relacion Marcas, Modelos y Tipo de Conector</h3>
-                <!-- Formulario para asociar una marca con un modelo y tipo de conector -->
-                <form action="/admin/vermarcas" method="POST">
-                    <!-- Desplegable de Marcas -->
-                    <div class="form-group my-3">
-                        <label for="ID_MARCA" class="form-label">Marca:</label>
-                        <select id="ID_MARCA" class="form-control" name="ID_MARCA" required>
-                            <option value="" disabled selected>Selecciona una marca</option>
-                            {{#each marcas}}
-                                <option value="{{ID_MARCA}}">{{MAR_NOMBRE}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <!-- Desplegable de Modelos -->
-                    <div class="form-group my-3">
-                        <label for="ID_MODELO" class="form-label">Modelo:</label>
-                        <select id="ID_MODELO" class="form-control" name="ID_MODELO" required>
-                            <option value="" disabled selected>Selecciona un modelo</option>
-                            {{#each modelos}}
-                                <option value="{{this.ID_MODELO}}">{{this.mod_nombre}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <!-- Desplegable de Tipos de Conector -->
-                    <div class="form-group my-3">
-                        <label for="ID_TC" class="form-label">Tipo de Conector:</label>
-                        <select id="ID_TC" class="form-control" name="ID_TC" required>
-                            <option value="" disabled selected>Selecciona un tipo de conector</option>
-                            {{#each tipos_conectores}}
-                                <option value="{{this.ID_TC}}">{{this.tc_nombre}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
+<div class="container">
 
-                    <div class="form-group d-grid my-3">
-                        <button class="btn btn-success">Guardar Relación</button>
-                    </div>
-                </form>                    
+    <h3>Relacion Marcas, Modelos y Tipo de Conector</h3>
+    <!-- Formulario para asociar una marca con un modelo y tipo de conector -->
+    <form action="/admin/vermarcas/guardar" method="POST">
+        <!-- Desplegable de Marcas -->
+        <div class="form-group my-3">
+            <label for="ID_MARCA" class="form-label">Marca:</label>
+            <select id="ID_MARCA" class="form-control" name="ID_MARCA" required>
+                <option value="" disabled selected>Selecciona una marca</option>
+                {{#each marcas}}
+                <option value="{{ID_MARCA}}">{{MAR_NOMBRE}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <!-- Desplegable de Modelos -->
+        <div class="form-group my-3">
+            <label for="ID_MODELO" class="form-label">Modelo:</label>
+            <select id="ID_MODELO" class="form-control" name="ID_MODELO" required>
+                <option value="" disabled selected>Selecciona un modelo</option>
+                {{#each modelos}}
+                <option value="{{ID_MODELO}}">{{MOD_NOMBRE}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <!-- Desplegable de Tipos de Conector -->
+        <div class="form-group my-3">
+            <label for="ID_TC" class="form-label">Tipo de Conector:</label>
+            <select id="ID_TC" class="form-control" name="ID_TC" required>
+                <option value="" disabled selected>Selecciona un tipo de conector</option>
+                {{#each tipos_conectores}}
+                <option value="{{ID_TC}}">{{TC_NOMBRE}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="form-group d-grid my-3">
+            <button class="btn btn-success">Guardar Relación</button>
+        </div>
+    </form>
+</div>
