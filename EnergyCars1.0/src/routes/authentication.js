@@ -5,6 +5,7 @@ const passport = require('passport');
 const {isLoggedIn, isnoLoggedIn } = require('../lib/auth');
 const pool = require('../database');
 const helpers = require('../lib/helpers');
+const {verificarReserva, hacerReserva } = require('../lib2/auth');
 
 // REDERIZAR EL FORMULRIO
 router.get('/registro', isnoLoggedIn, (req, res) => {
@@ -51,6 +52,32 @@ router.post('/acceso', isnoLoggedIn, (req, res, next) => {
             }
         })
     })(req,res,next);
+});
+
+// PAGINA DE RESERVAS
+router.get('/reserva', isLoggedIn, async (req,res) => {
+    const estacionCarga = await pool.query('SELECT * FROM estaciones_carga');
+    const surtidor = await pool.query('SELECT * FROM surtidores');
+    res.render('auth/reserva', {estacionCarga, surtidor});
+});
+
+router.post('/reserva', isLoggedIn, async (req,res) => {
+    const {ID_USER} = req.user;
+    const {reserva_fecha, reserva_hora_ini, reserva_hora_fin, reserva_importe} = req.body;
+    //try {
+        //Verificar si hay reserva disponible
+        const reservaDisponible = await verificarReserva(reserva_fecha, reserva_hora_ini, reserva_hora_fin, ID_EST_RES, ID_SURTIDOR)
+        console.log(reservaDisponible);
+        if (reservaDisponible) {
+            return res.status(409).json({ message: "Este horario ya esta reservado."})
+        }
+
+    //     //Si esta la reserva disponible la creamos.
+    //     await hacerReserva(reserva_fecha, reserva_hora_ini, reserva_hora_fin, reserva_importe, ID_USER, ID_EST_RES, ID_SURTIDOR);
+    //     res.redirect('/reserva');
+    // } catch(error) {
+
+    //}
 });
 
 router.get('/perfil', isLoggedIn, (req,res) => {

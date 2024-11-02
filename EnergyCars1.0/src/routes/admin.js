@@ -35,4 +35,8 @@ router.post('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
     res.redirect('/admin');
 })
 
+router.get('/reservas', isLoggedIn, async (req,res) => {
+    res.render('admin/gestionReservas');
+});
+
 module.exports = router;
