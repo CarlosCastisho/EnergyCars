@@ -152,6 +152,47 @@ router.get('/gestionEstaciones', isLoggedIn, async (req, res) => {
     res.render('admin/gestionEstaciones', { estaciones_carga, provincias });
 });
 
+// // Ruta para agregar Estaciones de carga
+// router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
+//     const {
+//         estc_nombre,
+//         estc_direccion,
+//         estc_localidad,
+//         estc_cant_surtidores,
+//         estc_latitud,
+//         estc_longitud
+//     } = req.body;
+
+//     let { id_provincia } = req.body; // `id_provincia` desde req.body, si está disponible
+
+//     try {
+//         // Si `id_provincia` depende de otra tabla, recupéralo aquí si no está en `req.body`
+//         if (!id_provincia) {
+//             const provinciaData = await pool.query('SELECT id_provincia FROM provincias');
+//             if (provinciaData.length > 0) {
+//                 id_provincia = provinciaData[0].id_provincia;
+//             } else {
+//                 throw new Error('ID_PROVINCIA no encontrado');
+//             }
+//         }
+
+//         // Verificar que todos los campos necesarios están presentes
+//         if (estc_nombre && estc_direccion && estc_localidad && estc_cant_surtidores && id_provincia && estc_latitud && estc_longitud) {
+//             await pool.query(
+//                 'INSERT INTO estaciones_carga (estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+//                 [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
+//             );
+//             req.flash('success', 'Estación de carga agregada con éxito');
+//         } else {
+//             console.log('Faltan algunos campos requeridos.');
+//         }
+//         res.redirect('/admin/gestionEstaciones');
+//     } catch (error) {
+//         console.error('Error al agregar estación de carga:', error);
+//         res.status(500).send('Error al agregar estación de carga');
+//     }
+// });
+
 // Ruta para agregar Estaciones de carga
 router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
     const {
@@ -178,11 +219,24 @@ router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
 
         // Verificar que todos los campos necesarios están presentes
         if (estc_nombre && estc_direccion && estc_localidad && estc_cant_surtidores && id_provincia && estc_latitud && estc_longitud) {
-            await pool.query(
+            // Insertar estación de carga
+            const result = await pool.query(
                 'INSERT INTO estaciones_carga (estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud) VALUES (?, ?, ?, ?, ?, ?, ?)', 
                 [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
             );
-            req.flash('success', 'Estación de carga agregada con éxito');
+
+            // Obtener el ID de la estación recién insertada
+            const estacionId = result.insertId;
+
+            // Insertar surtidores según la cantidad especificada
+            for (let i = 0; i < estc_cant_surtidores; i++) {
+                await pool.query(
+                    'INSERT INTO surtidores (id_estc, surt_estado) VALUES (?, ?)', 
+                    [estacionId, true] // `surt_estado` se establece en true como valor predeterminado
+                );
+            }
+
+            req.flash('success', 'Estación de carga y surtidores agregados con éxito');
         } else {
             console.log('Faltan algunos campos requeridos.');
         }
@@ -192,5 +246,6 @@ router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
         res.status(500).send('Error al agregar estación de carga');
     }
 });
+
 
 module.exports = router;
