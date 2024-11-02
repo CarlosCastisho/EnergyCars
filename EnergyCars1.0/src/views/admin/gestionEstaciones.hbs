@@ -1,0 +1,57 @@
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/admin/gestionEstaciones" method="POST">
+
+
+                        <div class="form-group my-3">
+                            <label for="estc_nombre" class="form-label">Nombre Estación:</label>
+                            <input class="form-control" type="text" name="estc_nombre" placeholder="" required>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="estc_direccion" class="form-label">Dirección Estación:</label>
+                            <input class="form-control" type="text" name="estc_direccion" placeholder="" required>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="estc_localidad" class="form-label">Localidad Estación:</label>
+                            <input class="form-control" type="text" name="estc_localidad" placeholder="" required>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="provincia" class="form-label">Provincia:</label>
+                            <select id="provincia" class="form-control" name="provincia" required>
+                                <option value="" disabled selected>Selecciona una provincia</option>
+                                {{#each provincias}}
+                                <option value="{{ID_PROVINCIA}}">{{PROVINCIA_NOMBRE}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="estc_cant_surtidores" class="form-label">Cantidad de Surtidores:</label>
+                            <input class="form-control" type="text" name="estc_cant_surtidores" placeholder="" required>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="estc_latitud" class="form-label">Latitud:</label>
+                            <input class="form-control" type="text" name="estc_latitud" placeholder="" required>
+                        </div>  
+
+                        <div class="form-group my-3">
+                            <label for="estc_longitud" class="form-label">Longitud:</label>
+                            <input class="form-control" type="text" name="estc_longitud" placeholder="" required>
+                        </div>                                              
+
+                        <div class="form-group d-grid my-3">
+                            <button class="btn btn-success">Guardar Estación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
