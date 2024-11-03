@@ -36,7 +36,7 @@ async function hacerReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, R
 // Función para cancelar una reserva
 async function cancelarReserva(ID_RESERVA) {
     try {
-        await pool.query('UPDATE reservas SET RESERVA_ESTADO = ? WHERE ID_RESERVA = ?', ['CANCELADA', ID_RESERVA]);
+        await pool.query('UPDATE reservas SET RESERVA_ESTADO = ? WHERE ID_RESERVA = ?', [ID_EST_RES, ID_RESERVA]);
     } catch (error) {
         console.error("Error al cancelar la reserva", error);
         throw error;
