@@ -2,7 +2,7 @@ const pool = require('../database');
 
 // Función para verificar si hay un conflicto de horario
 async function verificarReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, ID_EST_RES, ID_SURTIDOR) {
-    const consulta = 
+    const consulta =
         `SELECT * FROM reservas 
         WHERE ID_EST_RES = ? 
         AND ID_SURTIDOR = ? 
@@ -26,7 +26,7 @@ async function hacerReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, R
 
     try {
         await pool.query('INSERT INTO reservas SET ?', [nueva_Reserva]);
-    } catch (error){
+    } catch (error) {
         console.error("Error al agregar una reserva", error);
         throw error;
     }
@@ -43,11 +43,30 @@ async function cancelarReserva(ID_RESERVA) {
 }
 
 async function buscarEstacion() {
-    try { 
-        return await pool.query('SELECT * FROM estaciones_carga'); 
-    } catch (error) { 
-        console.error("Error fetching charging stations:", error); 
+    try {
+        return await pool.query('SELECT * FROM estaciones_carga');
+    } catch (error) {
+        console.error("Error fetching charging stations:", error);
         throw error; // Re-lanza el error para que el llamador sepa manejarlo 
+    }
+}
+
+async function costoCarga(tiempo, kw) {
+    try {
+        const [priceData] = await pool.query(
+            'SELECT PRECIO_KW FROM precios WHERE ID_TIEMPO_CARGA = ? AND ID_MEDIDA = ?',
+            [tiempo, kw]
+        );
+
+        if (priceData) {
+            const precioTotal = priceData.PRECIO_KW * tiempo;
+            return { precio: precioTotal };
+        } else {
+            return null; // O puedes lanzar un error aquí, según tus necesidades
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; // O maneja el error de otra manera, como devolver un objeto de error
     }
 }
 
@@ -56,5 +75,6 @@ module.exports = {
     verificarReserva,
     hacerReserva,
     cancelarReserva,
-    buscarEstacion
+    buscarEstacion,
+    costoCarga
 };
