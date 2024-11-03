@@ -32,7 +32,19 @@ async function hacerReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, R
     }
 }
 
+// Función para cancelar una reserva
+async function cancelarReserva(ID_RESERVA) {
+    try {
+        const resultado = await pool.query('DELETE FROM reservas WHERE ID_RESERVA = ?', [ID_RESERVA]);
+        return resultado.affectedRows > 0; // Devuelve true si la reserva se eliminó correctamente
+    } catch (error) {
+        console.error("Error al cancelar la reserva", error);
+        throw error;
+    }
+}
+
 module.exports = {
     verificarReserva,
-    hacerReserva
+    hacerReserva,
+    cancelarReserva
 };

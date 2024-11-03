@@ -64,7 +64,7 @@ router.get('/reserva', isLoggedIn, async (req,res) => {
 router.post('/reserva', isLoggedIn, async (req,res) => {
     const {ID_USER} = req.user;
     const {reserva_fecha, reserva_hora_ini, reserva_hora_fin, reserva_importe} = req.body;
-    //try {
+    try {
         //Verificar si hay reserva disponible
         const reservaDisponible = await verificarReserva(reserva_fecha, reserva_hora_ini, reserva_hora_fin, ID_EST_RES, ID_SURTIDOR)
         console.log(reservaDisponible);
@@ -72,12 +72,12 @@ router.post('/reserva', isLoggedIn, async (req,res) => {
             return res.status(409).json({ message: "Este horario ya esta reservado."})
         }
 
-    //     //Si esta la reserva disponible la creamos.
-    //     await hacerReserva(reserva_fecha, reserva_hora_ini, reserva_hora_fin, reserva_importe, ID_USER, ID_EST_RES, ID_SURTIDOR);
-    //     res.redirect('/reserva');
-    // } catch(error) {
+        //Si esta la reserva disponible la creamos.
+        await hacerReserva(reserva_fecha, reserva_hora_ini, reserva_hora_fin, reserva_importe, ID_USER, ID_EST_RES, ID_SURTIDOR);
+        res.redirect('/reserva');
+    } catch(error) {
 
-    //}
+    }
 });
 
 router.get('/perfil', isLoggedIn, (req,res) => {
