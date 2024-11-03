@@ -33,7 +33,6 @@ async function hacerReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, R
 }
 
 // Función para cancelar una reserva
-// Función para cancelar una reserva
 async function cancelarReserva(ID_RESERVA) {
     try {
         await pool.query('UPDATE reservas SET RESERVA_ESTADO = ? WHERE ID_RESERVA = ?', [ID_EST_RES, ID_RESERVA]);
@@ -43,9 +42,19 @@ async function cancelarReserva(ID_RESERVA) {
     }
 }
 
+async function buscarEstacion() {
+    try { 
+        return await pool.query('SELECT * FROM estaciones_carga'); 
+    } catch (error) { 
+        console.error("Error fetching charging stations:", error); 
+        throw error; // Re-lanza el error para que el llamador sepa manejarlo 
+    }
+}
+
 
 module.exports = {
     verificarReserva,
     hacerReserva,
-    cancelarReserva
+    cancelarReserva,
+    buscarEstacion
 };
