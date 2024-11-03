@@ -13,10 +13,12 @@ function calcularHoraFin() {
     }
 };
 
-function costoEstimado() {
-    const duracion = parseInt(document.getElementById('reserva_hora_time').value);
-    const precioKw = 25;
-    let pagoTotal = duracion * precioKw;
-    document.getElementById('reserva_importe').value = String(pagoTotal);
+// Función para cancelar una reserva
+async function cancelarReserva(ID_RESERVA) {
+    try {
+        await pool.query('UPDATE reservas SET RESERVA_ESTADO = ? WHERE ID_RESERVA = ?', ['CANCELADA', ID_RESERVA]);
+    } catch (error) {
+        console.error("Error al cancelar la reserva", error);
+        throw error;
+    }
 }
-
