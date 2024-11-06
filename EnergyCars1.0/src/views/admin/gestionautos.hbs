@@ -5,25 +5,25 @@
                 <h3>Marcas, Modelos y Año</h3>
                 <!-- Formulario para agregar una nueva marca -->
                 <form action="/admin/gestionautos/marca" method="POST">
-                    <input type="text" name="mar_nombre" placeholder="Nombre de la marca" required>
-                    <button class="btn btn-success">Agregar Marca</button>
+                    <input type="text" name="marc_nombre" placeholder="Nombre de la marca" required>
+                    <button class="btn btn-success m-1">Agregar Marca</button>
                 </form>
                 <!-- Formulario para agregar un nuevo modelo -->
                 <form action="/admin/gestionautos/modelo" method="POST">
                     <input type="text" name="mod_nombre" placeholder="Nombre del modelo" required>
-                    <button class="btn btn-success">Agregar Modelo</button>
+                    <button class="btn btn-success m-1">Agregar Modelo</button>
                 </form>                      
                 <!-- Formulario para agregar un nuevo año -->
                 <form action="/admin/gestionautos/anio" method="POST">
-                    <input type="number" name="n_anio" placeholder="Año" required>
-                    <button class="btn btn-success">Agregar Año</button>
+                    <input type="number" name="n_anio" placeholder="Año" min="2005" max="2025" required>
+                    <button class="btn btn-success m-1">Agregar Año</button>
                 </form> 
                         </div>                        
                 <!-- Formulario para agregar un tipo de conector -->
                 <form action="/admin/gestionautos/conector" method="POST">
                     <input type="text" name="tc_nombre" placeholder="Tipo de conector" required>
-                    <button class="btn btn-success">Agregar Conector</button>
-                    <a href="/admin/vermarcas1" class="btn btn-success">RELACIONAR</a>
+                    <button class="btn btn-success m-1">Agregar Conector</button>
+                    <a href="/admin/vermarcas" class="btn btn-success">RELACIONAR</a>
                 </form>
                 
 

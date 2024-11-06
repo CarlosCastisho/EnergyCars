@@ -5,6 +5,7 @@ const pool =  require('../database');
 const {isLoggedIn} = require('../lib/auth')
 
 router.get('/agregar', isLoggedIn, (req, res) => {
+    //const 
     res.render('autos/agregar');
 });
 

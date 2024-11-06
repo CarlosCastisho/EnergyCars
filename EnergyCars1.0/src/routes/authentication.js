@@ -55,10 +55,35 @@ router.post('/acceso', isnoLoggedIn, (req, res, next) => {
 });
 
 // PAGINA DE RESERVAS
+router.get('/listarReserva', isLoggedIn, async (req, res) => {
+    const reservas = await pool.query(`
+        SELECT 
+            reservas.ID_RESERVA,
+            reservas.RESERVA_FECHA,
+            reservas.RESERVA_HORA_INI,
+            reservas.RESERVA_HORA_FIN,
+            reservas.RESERVA_IMPORTE,
+            estaciones_carga.ESTC_NOMBRE,
+            estaciones_carga.ESTC_DIRECCION,
+            estaciones_carga.ESTC_LOCALIDAD,
+            estado_reservas.EST_RES_DESCRIP
+        FROM 
+            energycars.reservas
+        JOIN 
+            energycars.surtidores ON reservas.ID_SURTIDOR = surtidores.ID_SURTIDOR
+        JOIN 
+            energycars.estaciones_carga ON surtidores.ID_ESTC = estaciones_carga.ID_ESTC
+        JOIN 
+            energycars.estado_reservas ON reservas.ID_EST_RES = estado_reservas.ID_EST_RES
+    `);
+    res.render('auth/listarReserva', {reservas})
+})
+
 router.get('/reserva', isLoggedIn, async (req,res) => {
     const estacionCarga = await pool.query('SELECT * FROM estaciones_carga');
     const surtidor = await pool.query('SELECT * FROM surtidores');
-    res.render('auth/reserva', {estacionCarga, surtidor});
+    const tiempo_carga = await pool.query('SELECT * FROM tiempo_carga')
+    res.render('auth/reserva', {estacionCarga, surtidor, tiempo_carga});
 });
 
 router.post('/reserva', isLoggedIn, async (req,res) => {
