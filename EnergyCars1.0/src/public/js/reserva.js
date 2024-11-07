@@ -17,6 +17,10 @@ function costoEstimado() {
     const duracion = parseInt(document.getElementById('reserva_hora_time').value);
     const precioKw = 25;
     let pagoTotal = duracion * precioKw;
-    document.getElementById('reserva_importe').value = String(pagoTotal);
+    document.getElementById('reserva_importe').value = pagoTotal;
 }
+
+function actualizarIdEstc(idEstc) {
+    document.getElementById('ID_ESTC').value = idEstc;
+    }
 

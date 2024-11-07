@@ -1,14 +1,14 @@
 const pool = require('../database');
 
 // Función para verificar si hay un conflicto de horario
-async function verificarReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, ID_EST_RES, ID_SURTIDOR) {
+async function verificarReserva(ID_EST_RES, ID_SURTIDOR, RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN) {
     const consulta =
         `SELECT * FROM reservas 
         WHERE ID_EST_RES = ? 
         AND ID_SURTIDOR = ? 
         AND RESERVA_FECHA = ? 
         AND ((? BETWEEN RESERVA_HORA_INI AND RESERVA_HORA_FIN) OR (? BETWEEN RESERVA_HORA_INI AND RESERVA_HORA_FIN))`;
-    const [existeReserva] = await pool.query(consulta, [RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, ID_EST_RES, ID_SURTIDOR]);
+    const existeReserva = await pool.query(consulta, [ID_EST_RES, ID_SURTIDOR, RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN]);
     return existeReserva.length > 0;
 }
 
@@ -25,11 +25,23 @@ async function hacerReserva(RESERVA_FECHA, RESERVA_HORA_INI, RESERVA_HORA_FIN, R
     };
 
     try {
-        await pool.query('INSERT INTO reservas SET ?', [nueva_Reserva]);
+        const result = await pool.query('INSERT INTO reservas SET ?', [nueva_Reserva]);
+        const ID_RESERVA = result.insertId;
+        await pool.query('UPDATE reservas SET ID_EST_RES = 2 WHERE ID_RESERVA = ?', [ID_RESERVA]);
+        return ID_RESERVA;
     } catch (error) {
         console.error("Error al agregar una reserva", error);
         throw error;
     }
+}
+
+async function elegirSurtidor(ID_ESTC) { 
+    const surtidoresDisponibles = await pool.query('SELECT ID_SURTIDOR FROM surtidores WHERE ID_ESTC = ? AND SURT_ESTADO = 1', [ID_ESTC]);
+    if (surtidoresDisponibles.length === 0) { 
+        throw new Error('No hay surtidores disponibles.'); 
+    } 
+    const surtidorAleatorio = surtidoresDisponibles[Math.floor(Math.random() * surtidoresDisponibles.length)];
+    return surtidorAleatorio.ID_SURTIDOR; 
 }
 
 // Función para cancelar una reserva
@@ -76,5 +88,6 @@ module.exports = {
     hacerReserva,
     cancelarReserva,
     buscarEstacion,
-    costoCarga
+    costoCarga,
+    elegirSurtidor
 };
