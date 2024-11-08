@@ -45,7 +45,7 @@ async function elegirSurtidor(ID_ESTC) {
 }
 
 // Función para cancelar una reserva
-async function cancelarReserva(ID_RESERVA) {
+async function cancelarReserva(ID_EST_RES, ID_RESERVA) {
     try {
         await pool.query('UPDATE reservas SET RESERVA_ESTADO = ? WHERE ID_RESERVA = ?', [ID_EST_RES, ID_RESERVA]);
     } catch (error) {
