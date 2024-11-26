@@ -23,4 +23,3 @@ function costoEstimado() {
 function actualizarIdEstc(idEstc) {
     document.getElementById('ID_ESTC').value = idEstc;
     }
-

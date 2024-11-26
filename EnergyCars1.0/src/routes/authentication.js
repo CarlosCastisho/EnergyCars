@@ -71,12 +71,18 @@ router.get('/estaciones', isLoggedIn, async (req, res) => {
         JOIN
             provincias ON estaciones_carga.ID_PROVINCIA = provincias.ID_PROVINCIA
     `)
-    console.log(estacionesCarga);
     res.render('auth/estaciones', {estacionesCarga})
+})
+
+//PAGINA DEL MAPA
+router.get('/mapa', isLoggedIn, async(req, res) => {
+    res.render('auth/mapa')
 })
 
 // PAGINA DE RESERVAS
 router.get('/listarReserva', isLoggedIn, async (req, res) => {
+    const {ID_USER} = req.user;
+    console.log(ID_USER);
     const reservas = await pool.query(`
         SELECT 
             reservas.ID_RESERVA,
@@ -96,7 +102,9 @@ router.get('/listarReserva', isLoggedIn, async (req, res) => {
             energycars.estaciones_carga ON surtidores.ID_ESTC = estaciones_carga.ID_ESTC
         JOIN 
             energycars.estado_reservas ON reservas.ID_EST_RES = estado_reservas.ID_EST_RES
-    `);
+        WHERE
+            reservas.ID_USER = ?
+    `, [ID_USER]);
     res.render('auth/listarReserva', {reservas})
 })
 
