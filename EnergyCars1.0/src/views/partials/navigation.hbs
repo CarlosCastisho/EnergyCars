@@ -61,19 +61,22 @@
                         </a>
                     </div>
                     <ul class="nav flex-column m-5">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/autos">Mis vehículos</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mis vehículos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/autos">Vehículos</a></li>
+                                <li><a class="dropdown-item" href="/autos/agregar">Agregar</a></li>
+                            </ul>
                         </li>
-                        {{!-- <li class="nav-item">
-                            <a class="nav-link" href="/auth/estaciones">Estaciones de carga</a>
-                        </li> --}}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Estaciones de carga
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/auth/mapa">Mapa</a></li>
-                                <li><a class="dropdown-item" href="/auth/estaciones">Ver listado</a></li>
+                                <li><a class="dropdown-item" href="/auth/listarestaciones">Ver listado</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">

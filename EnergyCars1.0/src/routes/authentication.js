@@ -55,7 +55,7 @@ router.post('/acceso', isnoLoggedIn, (req, res, next) => {
 });
 
 //PAGINA DE ESTACIONES DE CARGA
-router.get('/estaciones', isLoggedIn, async (req, res) => {
+router.get('/listarestaciones', isLoggedIn, async (req, res) => {
     const estacionesCarga = await pool.query(`
         SELECT
             estaciones_carga.ID_ESTC,
@@ -71,12 +71,30 @@ router.get('/estaciones', isLoggedIn, async (req, res) => {
         JOIN
             provincias ON estaciones_carga.ID_PROVINCIA = provincias.ID_PROVINCIA
     `)
-    res.render('auth/estaciones', {estacionesCarga})
+    res.render('auth/listarestaciones', {estacionesCarga})
 })
 
 //PAGINA DEL MAPA
 router.get('/mapa', isLoggedIn, async(req, res) => {
-    res.render('auth/mapa')
+    res.render('auth/mapa');
+});
+
+router.get('/estaciones', isLoggedIn, async(req, res) => {
+    const estaciones = await pool.query(`
+        SELECT 
+            estaciones_carga.ID_ESTC, 
+            estaciones_carga.ESTC_NOMBRE, 
+            estaciones_carga.ESTC_LATITUD, 
+            estaciones_carga.ESTC_LONGITUD, 
+            COUNT(surtidores.ID_SURTIDOR) AS cantidad_surtidores
+        FROM 
+            estaciones_carga
+        LEFT JOIN
+            surtidores ON estaciones_carga.ID_ESTC = surtidores.ID_ESTC
+        GROUP BY 
+            estaciones_carga.ID_ESTC
+        `)
+    res.json(estaciones);
 })
 
 // PAGINA DE RESERVAS
