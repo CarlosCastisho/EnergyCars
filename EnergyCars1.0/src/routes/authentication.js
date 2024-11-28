@@ -5,29 +5,21 @@ const passport = require('passport');
 const {isLoggedIn, isnoLoggedIn } = require('../lib/auth');
 const pool = require('../database');
 const helpers = require('../lib/helpers');
-const {verificarReserva, hacerReserva, elegirSurtidor } = require('../lib2/auth');
+const {verificarReserva, hacerReserva, elegirSurtidor, buscarEstacion } = require('../lib2/auth');
 
 // REDERIZAR EL FORMULRIO
 router.get('/registro', isnoLoggedIn, (req, res) => {
     res.render('auth/registro')
 });
 
-// RECIBE LOS DATOS DEL FORMULARIO
-// router.post('/registro', (req, res) => {
-//     passport.isAuthenticated('local.registro', {
-//         successRedirect: '/profile', //2:28:41
-//         failureRedirect: '/registro',
-//         failureFlash: true
-//     })
-//     res.send('resivido');
-// });
-
+//REGISTRO
 router.post('/registro', isnoLoggedIn, passport.authenticate('local.registro', {
     successRedirect: '/autos',
     failureRedirect: '/registro',
     failureFlash: true
 }))
 
+//ACCESO
 router.get('/acceso', isnoLoggedIn, (req,res) => {
     res.render('auth/acceso')
 })
@@ -73,6 +65,12 @@ router.get('/listarestaciones', isLoggedIn, async (req, res) => {
     `)
     res.render('auth/listarestaciones', {estacionesCarga})
 })
+
+router.get('/buscar', isLoggedIn, async (req, res) => {
+    const buscar = req.query.buscar;
+    const rows = await buscarEstacion(buscar);
+    res.render('auth/listarestaciones', {rows});
+});
 
 //PAGINA DEL MAPA
 router.get('/mapa', isLoggedIn, async(req, res) => {
@@ -160,6 +158,28 @@ router.post('/reserva', isLoggedIn, async (req,res) => {
 
     }
 });
+
+router.get('/reserva/estacion/:ID_ESTC', isLoggedIn, async (req, res) => {
+    const {ID_ESTC} = req.params;
+    const filtroEstaciones = await pool.query(`
+        SELECT
+            estaciones_carga.ID_ESTC,
+            estaciones_carga.ESTC_NOMBRE,
+            estaciones_carga.ESTC_DIRECCION,
+            estaciones_carga.ESTC_LOCALIDAD,
+            provincias.PROVINCIA_NOMBRE,
+            estaciones_carga.ESTC_CANT_SURTIDORES,
+            estaciones_carga.ESTC_LATITUD,
+            estaciones_carga.ESTC_LONGITUD
+        FROM
+            estaciones_carga
+        JOIN
+            provincias ON estaciones_carga.ID_PROVINCIA = provincias.ID_PROVINCIA
+        WHERE
+            estaciones_carga.ID_ESTC = ?
+        `, {ID_ESTC})
+    res.render('auth/reserva', {filtroEstaciones});
+})
 
 router.get('/perfil', isLoggedIn, (req,res) => {
     res.render('auth/perfil');

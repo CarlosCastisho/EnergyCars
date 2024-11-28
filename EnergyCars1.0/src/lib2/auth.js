@@ -54,9 +54,29 @@ async function cancelarReserva(ID_EST_RES, ID_RESERVA) {
     }
 }
 
-async function buscarEstacion() {
+
+async function buscarEstacion(filtro) {
     try {
-        return await pool.query('SELECT * FROM estaciones_carga');
+        return await pool.query(`
+            SELECT
+                estaciones_carga.ID_ESTC,
+                estaciones_carga.ESTC_NOMBRE,
+                estaciones_carga.ESTC_DIRECCION,
+                estaciones_carga.ESTC_LOCALIDAD,
+                provincias.PROVINCIA_NOMBRE,
+                estaciones_carga.ESTC_CANT_SURTIDORES,
+                estaciones_carga.ESTC_LATITUD,
+                estaciones_carga.ESTC_LONGITUD
+            FROM
+                estaciones_carga
+            JOIN
+                provincias ON estaciones_carga.ID_PROVINCIA = provincias.ID_PROVINCIA 
+            WHERE 
+                ESTC_NOMBRE LIKE ?
+                OR (ESTC_DIRECCION LIKE ?)
+                OR (ESTC_LOCALIDAD LIKE ?)
+                OR (PROVINCIA_NOMBRE LIKE ?)`, 
+            [`%${filtro}%`,`%${filtro}%`,`%${filtro}%`,`%${filtro}%`]);;
     } catch (error) {
         console.error("Error fetching charging stations:", error);
         throw error; // Re-lanza el error para que el llamador sepa manejarlo 

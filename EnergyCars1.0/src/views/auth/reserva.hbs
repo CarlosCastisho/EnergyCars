@@ -9,9 +9,15 @@
                             <label for="estc_nom_direcc" class="form-label">Estación de carga:</label>
                             <select id="estc_nom_direcc" class="form-control" name="estc_nom_direcc" required onchange="actualizarIdEstc(this.value)">
                                 <option value="" disabled selected>Selecciona un estación</option>
-                                {{#each estacionCarga}}
-                                <option value="{{ID_ESTC}}">{{ESTC_NOMBRE}} - {{ESTC_DIRECCION}}</option>
-                                {{/each}}
+                                {{#if (eq ID_ESTC 0)}}
+                                    {{#each estacionCarga}}
+                                    <option value="{{ID_ESTC}}">{{ESTC_NOMBRE}} - {{ESTC_DIRECCION}}</option>
+                                    {{/each}}
+                                {{else}}
+                                    {{#each estacionCarga}}
+                                    <option value="{{id_estacion}}">{{ESTC_NOMBRE}} - {{ESTC_DIRECCION}}</option>
+                                    {{/each}}
+                                {{/if}}
                             </select>
                             <input type="hidden" name="ID_ESTC" id="ID_ESTC">
                         </div>
