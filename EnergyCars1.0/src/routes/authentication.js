@@ -78,7 +78,7 @@ router.get('/mapa', isLoggedIn, async(req, res) => {
 });
 
 router.get('/estaciones', isLoggedIn, async(req, res) => {
-    const estaciones = await pool.query(`
+    const estacionesMapa = await pool.query(`
         SELECT 
             estaciones_carga.ID_ESTC, 
             estaciones_carga.ESTC_NOMBRE, 
@@ -92,13 +92,12 @@ router.get('/estaciones', isLoggedIn, async(req, res) => {
         GROUP BY 
             estaciones_carga.ID_ESTC
         `)
-    res.json(estaciones);
+    res.json(estacionesMapa);
 })
 
 // PAGINA DE RESERVAS
 router.get('/listarReserva', isLoggedIn, async (req, res) => {
     const {ID_USER} = req.user;
-    console.log(ID_USER);
     const reservas = await pool.query(`
         SELECT 
             reservas.ID_RESERVA,
@@ -161,24 +160,10 @@ router.post('/reserva', isLoggedIn, async (req,res) => {
 
 router.get('/reserva/estacion/:ID_ESTC', isLoggedIn, async (req, res) => {
     const {ID_ESTC} = req.params;
-    const filtroEstaciones = await pool.query(`
-        SELECT
-            estaciones_carga.ID_ESTC,
-            estaciones_carga.ESTC_NOMBRE,
-            estaciones_carga.ESTC_DIRECCION,
-            estaciones_carga.ESTC_LOCALIDAD,
-            provincias.PROVINCIA_NOMBRE,
-            estaciones_carga.ESTC_CANT_SURTIDORES,
-            estaciones_carga.ESTC_LATITUD,
-            estaciones_carga.ESTC_LONGITUD
-        FROM
-            estaciones_carga
-        JOIN
-            provincias ON estaciones_carga.ID_PROVINCIA = provincias.ID_PROVINCIA
-        WHERE
-            estaciones_carga.ID_ESTC = ?
-        `, {ID_ESTC})
-    res.render('auth/reserva', {filtroEstaciones});
+    const estacionCargaID_ESTC = await pool.query('SELECT * FROM estaciones_carga WHERE ID_ESTC = ?', [ID_ESTC]);
+    const surtidor = await pool.query('SELECT * FROM surtidores');
+    const tiempo_carga = await pool.query('SELECT * FROM tiempo_carga')
+    res.render('auth/reserva',{estacionCargaID_ESTC, surtidor, tiempo_carga});
 })
 
 router.get('/perfil', isLoggedIn, (req,res) => {

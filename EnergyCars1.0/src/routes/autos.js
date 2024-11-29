@@ -4,9 +4,19 @@ const router = express.Router();
 const pool =  require('../database');
 const {isLoggedIn} = require('../lib/auth')
 
-router.get('/agregar', isLoggedIn, (req, res) => {
-    //const 
-    res.render('autos/agregar');
+router.get('/agregar', isLoggedIn, async (req, res) => {
+    const marca_modeloAgregar = await pool.query(`
+        SELECT 
+            marca_modelo.ID_MARCA_MODELO, 
+            marcas.MARC_NOMBRE, 
+            modelos.MOD_NOMBRE,
+            tipos_conectores.TC_NOMBRE 
+            FROM marca_modelo 
+            JOIN marcas ON marca_modelo.ID_MARCA = marcas.ID_MARCA
+            JOIN modelos ON marca_modelo.ID_MODELO = modelos.ID_MODELO
+            JOIN tipos_conectores ON marca_modelo.ID_TC = tipos_conectores.ID_TC ;
+        `)
+    res.render('autos/agregar', {marca_modeloAgregar});
 });
 
 router.post('/agregar', isLoggedIn, async (req, res) => {

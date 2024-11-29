@@ -4,19 +4,15 @@
             <div class="card">
                 <div class="card-body">
                     <form action="/autos/agregar" method="POST">
-
-                            
-                            <select id="veh_marca" class="form-control" name="veh_marca" onchange="actualizarModelos()">
+                        <div class="form-group">
+                            <label for="veh_marca" class="form-label">Marca:</label>
+                            <select id="veh_marca" class="form-control" name="veh_marca" onchange="">
                                 <option value="" disabled selected>Selecciona una marca</option>
-                                <option value="Ford">Ford</option>
-                                <option value="MercedesBenz">Mercedes Benz</option>
-                                <option value="Audi">Audi</option>
-                                <option value="Porsche">Porsche</option>
-                                <option value="Nissan">Nissan</option>
-                                <option value="Coradir">Coradir</option>
-                                <option value="Renault">Renault</option>
+                                {{#each marca_modeloAgregar}}
+                                <option value="{{MARC_NOMBRE}}">{{MARC_NOMBRE}}</option>
+                                {{/each}}
                             </select>
-                            
+                        </div>                            
                         <div class="form-group my-3">
                             <label for="veh_modelo" class="form-label">Modelo:</label>
                             <select id="veh_modelo" class="form-control" name="veh_modelo">
