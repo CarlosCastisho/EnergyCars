@@ -17,7 +17,6 @@ router.get('/eliminar/:ID_USER', isLoggedIn, async (req, res) => {
     res.redirect('/admin');
 });
 
-<<<<<<< HEAD
 router.get('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
     const {ID_USER} = req.params;
     const editarAdminUser = await pool.query('SELECT * FROM usuario WHERE ID_USER = ?', [ID_USER]);
@@ -31,13 +30,11 @@ router.post('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
     const editarAdminUser = {
         user_correo,
         user_telefono
-=======
-router.get('/editar/:ID_VEH', isLoggedIn, async (req, res) => {
-    const { ID_VEH } = req.params;
-    const editarAutos = await pool.query('SELECT * FROM vehiculos WHERE ID_VEH = ?', [ID_VEH]);
-    res.render('autos/editar', { editarAutos: editarAutos[0] });
-});
-
+    };
+    await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarAdminUser, ID_USER]);
+    req.flash('auto_success', 'Usuario actualizado con éxito');
+    res.redirect('/admin');
+    });
 
 router.post('/editar/:ID_VEH', isLoggedIn, async (req, res) => {
     const { ID_VEH } = req.params;
@@ -47,11 +44,10 @@ router.post('/editar/:ID_VEH', isLoggedIn, async (req, res) => {
         veh_modelo,
         veh_anio,
         veh_patente
->>>>>>> 19e7942ca09986638cd5c33cc3b852c1fcb493dd
     };
-    await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarAdminUser, ID_USER]);
-    req.flash('auto_success', 'Usuario actualizado con éxito');
-    res.redirect('/admin');
+    await pool.query('UPDATE vehiculos set ? WHERE ID_VEH = ?', [editarAutos, ID_VEH]);
+    req.flash('auto_success', 'CAMBIO EXITOSO');
+    res.redirect('/autos');
 })
 
 router.get('/reservas', isLoggedIn, async (req,res) => {
@@ -112,7 +108,6 @@ router.get('/vermarcas', isLoggedIn, async (req, res) => {
     const marcas = await pool.query('SELECT * FROM marcas');
     const modelos = await pool.query('SELECT * FROM modelos');
     const tipos_conectores = await pool.query('SELECT * FROM tipos_conectores');
-<<<<<<< HEAD
     const marca_modelo = await pool.query(`
             SELECT 
                 marca_modelo.ID_MARCA_MODELO, 
@@ -130,22 +125,6 @@ router.get('/vermarcas', isLoggedIn, async (req, res) => {
     res.render('admin/vermarcas', { marcas, modelos, tipos_conectores, marca_modelo });
 });
 
-
-
-//Ruta para agregar relación entre marca, modelo y tipo de conector
-router.post('/vermarcas', isLoggedIn, async (req, res) => {
-    const { id_marca, id_modelo, id_tc } = req.body;
-    try {
-        if (id_marca && id_modelo && id_tc) {
-            await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [id_marca, id_modelo, id_tc]);
-            req.flash('auto_success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
-=======
-
-    console.log({ marcas, modelos, tipos_conectores });  // Debugging output
-
-    res.render('admin/vermarcas', { marcas, modelos, tipos_conectores });
-});
-
 // Ruta para agregar relación entre marca, modelo y tipo de conector
 router.post('/vermarcas/guardar', isLoggedIn, async (req, res) => {
     const { ID_MARCA, ID_MODELO, ID_TC } = req.body;
@@ -153,7 +132,6 @@ router.post('/vermarcas/guardar', isLoggedIn, async (req, res) => {
         if (ID_MARCA && ID_MODELO && ID_TC) {
             await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [ID_MARCA, ID_MODELO, ID_TC]);
             req.flash('success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
->>>>>>> 19e7942ca09986638cd5c33cc3b852c1fcb493dd
         }
         res.redirect('/admin/vermarcas');
     } catch (error) {

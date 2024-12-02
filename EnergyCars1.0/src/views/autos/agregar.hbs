@@ -4,7 +4,6 @@
             <div class="card">
                 <div class="card-body">
                     <form action="/autos/agregar" method="POST">
-<<<<<<< HEAD
                         <div class="form-group">
                             <label for="veh_marca" class="form-label">Marca:</label>
                             <select id="veh_marca" class="form-control" name="veh_marca" onchange="">
@@ -14,20 +13,6 @@
                                 {{/each}}
                             </select>
                         </div>                            
-=======
-
-
-                        <div class="form-group my-3">
-                            <label for="veh_marca" class="form-label">Marca:</label>
-                            <select id="veh_marca" class="form-control" name="veh_marca" required>
-                                <option value="" disabled selected>Selecciona una marca</option>
-                                {{#each marcas}}
-                                <option value="{{ID_MARCA}}">{{MAR_NOMBRE}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-
->>>>>>> 19e7942ca09986638cd5c33cc3b852c1fcb493dd
                         <div class="form-group my-3">
                             <label for="veh_modelo" class="form-label">Modelo:</label>
                             <select id="veh_modelo" class="form-control" name="veh_modelo">
