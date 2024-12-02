@@ -138,9 +138,10 @@ router.post('/vermarcas', isLoggedIn, async (req, res) => {
 router.get('/gestionEstaciones', async (req, res) => {
     try {
         const estaciones = await pool.query('SELECT * FROM estaciones_carga');
-        res.render('admin/gestionEstaciones', { estaciones }); // Renderiza la vista y envía los datos
+        const provincias = await pool.query('SELECT * FROM provincias');
+        res.render('admin/gestionEstaciones', { estaciones, provincias }); 
     } catch (error) {
-        console.error('Error al obtener las estaciones:', error);
+        console.error('Error al obtener las estaciones o provincias:', error);
         res.status(500).send('Error al cargar las estaciones');
     }
 });
@@ -174,8 +175,7 @@ router.post('/gestionEstaciones', async (req, res) => {
         res.redirect('/admin/gestionEstaciones');
     } catch (error) {
         console.error('Error al crear estación de carga:', error);
-        req.fla
-    }sh('error', 'Ocurrió un error al crear la estación de carga.');
-        res.redirect('/admin/gestionEstaciones');
+        req.flash('error', 'Ocurrió un error al crear la estación de carga.');
+    }
 });
 module.exports = router;

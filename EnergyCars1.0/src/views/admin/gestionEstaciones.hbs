@@ -22,8 +22,11 @@
                         </div>
                         <div>
                             <label for="id_provincia">Provincia:</label>
-                            <select name="id_provincia" id="id_provincia" required>
-                                <!-- Opciones dinámicas cargadas desde la base de datos -->
+                            <select name="id_provincia" required>
+                                <option value="" disabled selected>Selecciona una provincia</option>
+                                {{#each provincias}}
+                                    <option value="{{this.ID_PROVINCIA}}">{{this.PROVINCIA_NOMBRE}}</option>
+                                {{/each}}
                             </select>
                         </div>
                         <div>
