@@ -135,4 +135,47 @@ router.post('/vermarcas', isLoggedIn, async (req, res) => {
 
 
 // } )
+router.get('/gestionEstaciones', async (req, res) => {
+    try {
+        const estaciones = await pool.query('SELECT * FROM estaciones_carga');
+        res.render('admin/gestionEstaciones', { estaciones }); // Renderiza la vista y envía los datos
+    } catch (error) {
+        console.error('Error al obtener las estaciones:', error);
+        res.status(500).send('Error al cargar las estaciones');
+    }
+});
+
+// Ruta para crear una estación de carga
+router.post('/gestionEstaciones', async (req, res) => {
+    const {
+        estc_nombre,
+        estc_direccion,
+        estc_localidad,
+        estc_cant_surtidores,
+        id_provincia,
+        estc_latitud,
+        estc_longitud
+    } = req.body;
+
+    try {
+        // Validar que todos los campos requeridos están presentes
+        if (!estc_nombre || !estc_direccion || !estc_localidad || !estc_cant_surtidores || !id_provincia || !estc_latitud || !estc_longitud) {
+            req.flash('error', 'Por favor, completa todos los campos.');
+            return res.redirect('/admin/gestionEstaciones');
+        }
+
+        // Insertar la estación en la base de datos
+        await pool.query(
+            'INSERT INTO estaciones_carga (ESTC_NOMBRE, ESTC_DIRECCION, ESTC_LOCALIDAD, ESTC_CANT_SURTIDORES, ID_PROVINCIA, ESTC_LATITUD, ESTC_LONGITUD) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+            [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
+        );
+
+        req.flash('success', 'Estación de carga creada exitosamente.');
+        res.redirect('/admin/gestionEstaciones');
+    } catch (error) {
+        console.error('Error al crear estación de carga:', error);
+        req.fla
+    }sh('error', 'Ocurrió un error al crear la estación de carga.');
+        res.redirect('/admin/gestionEstaciones');
+});
 module.exports = router;
