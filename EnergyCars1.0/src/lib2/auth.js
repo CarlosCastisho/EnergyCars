@@ -54,7 +54,7 @@ async function cancelarReserva(ID_EST_RES, ID_RESERVA) {
     }
 }
 
-
+// Función para buscar una estación de carga
 async function buscarEstacion(filtro) {
     try {
         return await pool.query(`
@@ -79,7 +79,7 @@ async function buscarEstacion(filtro) {
             [`%${filtro}%`,`%${filtro}%`,`%${filtro}%`,`%${filtro}%`]);;
     } catch (error) {
         console.error("Error fetching charging stations:", error);
-        throw error; // Re-lanza el error para que el llamador sepa manejarlo 
+        throw error;  
     }
 }
 
