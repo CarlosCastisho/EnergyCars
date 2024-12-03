@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const adminRoutes = require('./admin');
 
-const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth')
+const pool =  require('../database');
+const {isLoggedIn} = require('../lib/auth')
 
 router.get('/', isLoggedIn, async (req, res) => {
     const adminuser = await pool.query('SELECT * FROM usuario WHERE ID_USER > 1 ');
     res.render('admin/gestionUser', { adminuser });
 });
 
-router.get('/eliminar/:ID_USER', isLoggedIn, async (req, res) => {
-    const { ID_USER } = req.params;
+router.get('/eliminar/:ID_USER', isLoggedIn, async (req,res) => {
+    const {ID_USER} = req.params;
     await pool.query('DELETE FROM usuario WHERE ID_USER = ?', [ID_USER]);
     req.flash('auto_success', 'USUARIO ELIMINADO')
     res.redirect('/admin');
@@ -34,20 +33,6 @@ router.post('/editarAdminUser/:ID_USER', isLoggedIn, async (req,res) => {
     await pool.query('UPDATE usuario set ? WHERE ID_USER = ?', [editarAdminUser, ID_USER]);
     req.flash('auto_success', 'Usuario actualizado con éxito');
     res.redirect('/admin');
-    });
-
-router.post('/editar/:ID_VEH', isLoggedIn, async (req, res) => {
-    const { ID_VEH } = req.params;
-    const { veh_marca, veh_modelo, veh_anio, veh_patente } = req.body;
-    const editarAutos = {
-        veh_marca,
-        veh_modelo,
-        veh_anio,
-        veh_patente
-    };
-    await pool.query('UPDATE vehiculos set ? WHERE ID_VEH = ?', [editarAutos, ID_VEH]);
-    req.flash('auto_success', 'CAMBIO EXITOSO');
-    res.redirect('/autos');
 })
 
 router.get('/reservas', isLoggedIn, async (req,res) => {
@@ -76,7 +61,7 @@ router.post('/gestionautos/marca', isLoggedIn, async (req, res) => {
 
 // Ruta para agregar nuevo modelo
 router.post('/gestionautos/modelo', isLoggedIn, async (req, res) => {
-    const { mod_nombre } = req.body;
+    const { mod_nombre} = req.body;
     if (mod_nombre) {
         await pool.query('INSERT INTO modelos (mod_nombre) VALUES (?)', [mod_nombre]);
     }
@@ -125,13 +110,15 @@ router.get('/vermarcas', isLoggedIn, async (req, res) => {
     res.render('admin/vermarcas', { marcas, modelos, tipos_conectores, marca_modelo });
 });
 
-// Ruta para agregar relación entre marca, modelo y tipo de conector
-router.post('/vermarcas/guardar', isLoggedIn, async (req, res) => {
-    const { ID_MARCA, ID_MODELO, ID_TC } = req.body;
+
+
+//Ruta para agregar relación entre marca, modelo y tipo de conector
+router.post('/vermarcas', isLoggedIn, async (req, res) => {
+    const { id_marca, id_modelo, id_tc } = req.body;
     try {
-        if (ID_MARCA && ID_MODELO && ID_TC) {
-            await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [ID_MARCA, ID_MODELO, ID_TC]);
-            req.flash('success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
+        if (id_marca && id_modelo && id_tc) {
+            await pool.query('INSERT INTO marca_modelo (ID_MARCA, ID_MODELO, ID_TC) VALUES (?, ?, ?)', [id_marca, id_modelo, id_tc]);
+            req.flash('auto_success', 'Relación entre marca, modelo y tipo de conector agregada con éxito');
         }
         res.redirect('/admin/vermarcas');
     } catch (error) {
@@ -140,137 +127,55 @@ router.post('/vermarcas/guardar', isLoggedIn, async (req, res) => {
     }
 });
 
-router.get('/vermarcas', isLoggedIn, async (req, res) => {
-    try {
-        const resultados = await pool.query(`
-            SELECT
-                marca_modelo.ID_MARCA, 
-                marcas.MAR_NOMBRE,
-                marca_modelo.ID_MODELO,
-                modelos.MOD_NOMBRE,
-                marca_modelo.ID_TC,
-                tipos_conectores.TC_NOMBRE
-            FROM 
-                marca_modelo
-            JOIN 
-                marcas ON marca_modelo.ID_MARCA = marcas.ID_MARCA
-            JOIN 
-                modelos ON marca_modelo.ID_MODELO = modelos.ID_MODELO
-            JOIN 
-                tipos_conectores ON marca_modelo.ID_TC = tipos_conectores.ID_TC;
-        `);
+// router.post('/eliminar/:ID_MARCA_MODELO', isLoggedIn, async (req, res) => {
+//     const {ID_MARCA_MODELO} = req.params;
+//     await pool.query('DELETE FROM marca_modelo WHERE ID_MARCA_MODELO = ?', [ID_MARCA_MODELO]);
+//     req.flash('auto_success', 'RESGISTRO ELIMINADO')
+//     res.redirect('/admin/vermarcas');
 
-        res.render('admin/vermarcas', { resultados });
+
+// } )
+router.get('/gestionEstaciones', async (req, res) => {
+    try {
+        const estaciones = await pool.query('SELECT * FROM estaciones_carga');
+        const provincias = await pool.query('SELECT * FROM provincias');
+        res.render('admin/gestionEstaciones', { estaciones, provincias }); 
     } catch (error) {
-        console.error("Error al obtener los datos de la relación:", error);
-        res.status(500).send("Error al cargar los datos de la relación.");
+        console.error('Error al obtener las estaciones o provincias:', error);
+        res.status(500).send('Error al cargar las estaciones');
     }
 });
 
-//Ruta para obtener Estaciones de Carga
-router.get('/gestionEstaciones', isLoggedIn, async (req, res) => {
-    const estaciones_carga = await pool.query('SELECT * FROM estaciones_carga');
-    const provincias = await pool.query('SELECT * FROM provincias');
-
-    console.log({ estaciones_carga , provincias });  // Debugging output
-
-    res.render('admin/gestionEstaciones', { estaciones_carga, provincias });
-});
-
-// // Ruta para agregar Estaciones de carga
-// router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
-//     const {
-//         estc_nombre,
-//         estc_direccion,
-//         estc_localidad,
-//         estc_cant_surtidores,
-//         estc_latitud,
-//         estc_longitud
-//     } = req.body;
-
-//     let { id_provincia } = req.body; // `id_provincia` desde req.body, si está disponible
-
-//     try {
-//         // Si `id_provincia` depende de otra tabla, recupéralo aquí si no está en `req.body`
-//         if (!id_provincia) {
-//             const provinciaData = await pool.query('SELECT id_provincia FROM provincias');
-//             if (provinciaData.length > 0) {
-//                 id_provincia = provinciaData[0].id_provincia;
-//             } else {
-//                 throw new Error('ID_PROVINCIA no encontrado');
-//             }
-//         }
-
-//         // Verificar que todos los campos necesarios están presentes
-//         if (estc_nombre && estc_direccion && estc_localidad && estc_cant_surtidores && id_provincia && estc_latitud && estc_longitud) {
-//             await pool.query(
-//                 'INSERT INTO estaciones_carga (estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-//                 [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
-//             );
-//             req.flash('success', 'Estación de carga agregada con éxito');
-//         } else {
-//             console.log('Faltan algunos campos requeridos.');
-//         }
-//         res.redirect('/admin/gestionEstaciones');
-//     } catch (error) {
-//         console.error('Error al agregar estación de carga:', error);
-//         res.status(500).send('Error al agregar estación de carga');
-//     }
-// });
-
-// Ruta para agregar Estaciones de carga
-router.post('/gestionEstaciones', isLoggedIn, async (req, res) => {
+// Ruta para crear una estación de carga
+router.post('/gestionEstaciones', async (req, res) => {
     const {
         estc_nombre,
         estc_direccion,
         estc_localidad,
         estc_cant_surtidores,
+        id_provincia,
         estc_latitud,
         estc_longitud
     } = req.body;
 
-    let { id_provincia } = req.body; // `id_provincia` desde req.body, si está disponible
-
     try {
-        // Si `id_provincia` depende de otra tabla, recupéralo aquí si no está en `req.body`
-        if (!id_provincia) {
-            const provinciaData = await pool.query('SELECT id_provincia FROM provincias');
-            if (provinciaData.length > 0) {
-                id_provincia = provinciaData[0].id_provincia;
-            } else {
-                throw new Error('ID_PROVINCIA no encontrado');
-            }
+        // Validar que todos los campos requeridos están presentes
+        if (!estc_nombre || !estc_direccion || !estc_localidad || !estc_cant_surtidores || !id_provincia || !estc_latitud || !estc_longitud) {
+            req.flash('error', 'Por favor, completa todos los campos.');
+            return res.redirect('/admin/gestionEstaciones');
         }
 
-        // Verificar que todos los campos necesarios están presentes
-        if (estc_nombre && estc_direccion && estc_localidad && estc_cant_surtidores && id_provincia && estc_latitud && estc_longitud) {
-            // Insertar estación de carga
-            const result = await pool.query(
-                'INSERT INTO estaciones_carga (estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-                [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
-            );
+        // Insertar la estación en la base de datos
+        await pool.query(
+            'INSERT INTO estaciones_carga (ESTC_NOMBRE, ESTC_DIRECCION, ESTC_LOCALIDAD, ESTC_CANT_SURTIDORES, ID_PROVINCIA, ESTC_LATITUD, ESTC_LONGITUD) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+            [estc_nombre, estc_direccion, estc_localidad, estc_cant_surtidores, id_provincia, estc_latitud, estc_longitud]
+        );
 
-            // Obtener el ID de la estación recién insertada
-            const estacionId = result.insertId;
-
-            // Insertar surtidores según la cantidad especificada
-            for (let i = 0; i < estc_cant_surtidores; i++) {
-                await pool.query(
-                    'INSERT INTO surtidores (id_estc, surt_estado) VALUES (?, ?)', 
-                    [estacionId, true] // `surt_estado` se establece en true como valor predeterminado
-                );
-            }
-
-            req.flash('success', 'Estación de carga y surtidores agregados con éxito');
-        } else {
-            console.log('Faltan algunos campos requeridos.');
-        }
+        req.flash('success', 'Estación de carga creada exitosamente.');
         res.redirect('/admin/gestionEstaciones');
     } catch (error) {
-        console.error('Error al agregar estación de carga:', error);
-        res.status(500).send('Error al agregar estación de carga');
+        console.error('Error al crear estación de carga:', error);
+        req.flash('error', 'Ocurrió un error al crear la estación de carga.');
     }
 });
-
-
 module.exports = router;
