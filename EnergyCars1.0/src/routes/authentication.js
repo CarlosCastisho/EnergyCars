@@ -180,10 +180,9 @@ router.get('/editarUser/:ID_USER', isLoggedIn, async (req,res) => {
 router.post('/editarUser/:ID_USER', isLoggedIn, async (req,res) => {
     const { ID_USER } = req.params;
     
-    const { user_nombre, user_apellido, user_telefono, user_contrasenia } = req.body;
+    const { user_correo, user_telefono, user_contrasenia } = req.body;
     const editarUser = {
-        user_nombre,
-        user_apellido,
+        user_correo,
         user_telefono,
         user_contrasenia: await helpers.encryptContrasenia(user_contrasenia)
     };
